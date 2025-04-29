@@ -47,7 +47,7 @@ const data = {
     },
     {
       title: "Orders",
-      url: "/orders",
+      url: "/components/orders",
       icon: IconListDetails,
       id: "orders"
     },
@@ -113,7 +113,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="hover:cursor-pointer">
-        <NavMain items={data.navMain} className=""/>
+        <NavMain items={data.navMain}/>
         <NavAccount items={data.account} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
