@@ -112,7 +112,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent className="hover:cursor-pointer">
+      <SidebarContent>
         <NavMain items={data.navMain}/>
         <NavAccount items={data.account} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
