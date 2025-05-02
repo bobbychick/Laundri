@@ -42,7 +42,7 @@ const data = {
     },
     {
       title: "Orders",
-      url: "/components/orders",
+      url: "/orders",
       icon: IconListDetails,
       id: "orders",
     },
