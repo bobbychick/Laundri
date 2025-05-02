@@ -1,3 +1,4 @@
+"use client";
 import { Search } from "lucide-react";
 import * as React from "react";
 
@@ -60,7 +61,7 @@ const customers = [
   },
 ];
 
-export function CustomersPage() {
+export default function CustomersPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState("all");
 

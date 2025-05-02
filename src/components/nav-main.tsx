@@ -1,4 +1,3 @@
-import { type Icon } from "@tabler/icons-react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -6,6 +5,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { type Icon } from "@tabler/icons-react";
 
 export function NavMain({
   items,
@@ -16,7 +16,6 @@ export function NavMain({
     icon?: Icon;
   }[];
 }) {
-
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
