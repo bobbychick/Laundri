@@ -1,12 +1,4 @@
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { columns, incomingColumns } from "@/components/columns";
 import { DataTable } from "@/components/data-tabletest";
@@ -143,46 +135,22 @@ const incoming = [
 
 export function SectionCards() {
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-3 @5xl/main:grid-cols-3">
-      <Card className="@container/card @xl/main:col-span-2 h-[48vh]">
+    <div className="grid grid-cols-3 gap-4 px-4 lg:px-6">
+      <Card className="col-span-2 shadow-none">
         <CardHeader>
           <CardDescription>Ongoing Orders</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            Your Current Orders
-          </CardTitle>
-          <div className="w-full h-[calc(66vh-8rem)] overflow-auto">
-            <DataTable columns={columns} data={orders} />
-          </div>
-          <CardAction>
-            {/* <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge> */}
-          </CardAction>
+          <CardTitle>Your Current Orders</CardTitle>
+          <DataTable columns={columns} data={orders} />
         </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          {/* <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Visitors for the last 6 months
-          </div> */}
-        </CardFooter>
       </Card>
-      <Card className="@container/card h-[48vh]">
+      <Card className="shadow-none ">
         <CardHeader>
           <CardDescription>Incoming/Outgoing Deliveries</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            Orders being delivered
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline"></Badge>
-          </CardAction>
+          <CardTitle>Orders being delivered</CardTitle>
         </CardHeader>
         <div className="px-4">
           <DataTable columns={incomingColumns} data={incoming} />
         </div>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm"></CardFooter>
       </Card>
     </div>
   );

@@ -13,19 +13,19 @@ import {
 } from "@tabler/icons-react";
 import * as React from "react";
 
-import { NavAccount } from "@/components/nav-account";
-import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
-import { NavUser } from "@/components/nav-user";
+import { NavAccount } from "@/components/sidebar/nav-account";
+import { NavMain } from "@/components/sidebar/nav-main";
+import { NavSecondary } from "@/components/sidebar/nav-secondary";
+import { NavUser } from "@/components/sidebar/nav-user";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
+import { AppSidebarTrigger } from "./app-sidebar-trigger";
 
 const data = {
   user: {
@@ -92,17 +92,16 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Laundri</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <AppSidebarTrigger />
+      <SidebarHeader className="border-b flex items-center h-12">
+        <SidebarMenuItem className="h-12 flex items-center">
+          <Link href="/">
+            <div className="flex items-center gap-1">
+              <IconInnerShadowTop className="size-5 mt-0.5" />
+              <span className="text-base font-semibold">Laundri</span>
+            </div>
+          </Link>
+        </SidebarMenuItem>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

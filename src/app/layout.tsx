@@ -1,7 +1,8 @@
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 import { DM_Sans, Merriweather } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -21,15 +22,19 @@ export const metadata: Metadata = {
   description: "Laundri",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const sidebarCookie = cookieStore.get("sidebar_state");
+  const defaultOpen = sidebarCookie ? sidebarCookie.value === "true" : true;
+
   return (
     <html lang="en">
       <body className={`${dmSans.variable} ${merriweather.variable} antialiased`}>
-        <SidebarProvider>
+        <SidebarProvider defaultOpen={defaultOpen}>
           <AppSidebar />
           <SidebarInset>{children}</SidebarInset>
         </SidebarProvider>
