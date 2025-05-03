@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { AppSidebarTrigger } from "@/components/sidebar/app-sidebar-trigger";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 import { DM_Sans, Merriweather } from "next/font/google";
@@ -35,6 +36,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${dmSans.variable} ${merriweather.variable} antialiased`}>
         <SidebarProvider defaultOpen={defaultOpen}>
+          <AppSidebarTrigger />
           <AppSidebar />
           <SidebarInset>{children}</SidebarInset>
         </SidebarProvider>

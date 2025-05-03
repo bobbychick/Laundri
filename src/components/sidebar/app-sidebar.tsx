@@ -25,7 +25,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { AppSidebarTrigger } from "./app-sidebar-trigger";
 
 const data = {
   user: {
@@ -92,7 +91,6 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
-      <AppSidebarTrigger />
       <SidebarHeader className="border-b flex items-center h-12">
         <SidebarMenuItem className="h-12 flex items-center">
           <Link href="/">

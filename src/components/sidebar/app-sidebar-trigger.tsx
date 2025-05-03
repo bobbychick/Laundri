@@ -1,13 +1,15 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { SidebarTrigger } from "../ui/sidebar";
+import { SidebarTrigger, useSidebar } from "../ui/sidebar";
 
 export function AppSidebarTrigger() {
+  const { state } = useSidebar();
+
   return (
     <SidebarTrigger
       className={cn(
-        "fixed top-2.5 left-2.5 z-40",
-        "peer-data-[state=expanded]:bg-sidebar peer-data-[state=expanded]:border-none peer-data-[state=expanded]:shadow-none"
+        "fixed top-3 left-3 z-40",
+        state === "expanded" && "bg-sidebar border-none shadow-none"
       )}
       variant={"outline"}
       size={"icon"}
