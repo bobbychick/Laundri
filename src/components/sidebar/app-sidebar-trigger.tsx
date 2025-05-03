@@ -8,7 +8,7 @@ export function AppSidebarTrigger() {
   return (
     <SidebarTrigger
       className={cn(
-        "fixed top-3 left-3 z-40",
+        "fixed top-2.5 left-2.5 z-40",
         state === "expanded" && "bg-sidebar border-none shadow-none"
       )}
       variant={"outline"}

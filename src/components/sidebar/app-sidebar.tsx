@@ -95,8 +95,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenuItem className="h-12 flex items-center">
           <Link href="/">
             <div className="flex items-center gap-1">
-              <IconInnerShadowTop className="size-5 mt-0.5" />
-              <span className="text-base font-semibold">Laundri</span>
+              <IconInnerShadowTop className="size-5" />
+              <span className="text-lg font-semibold">Laundri</span>
             </div>
           </Link>
         </SidebarMenuItem>

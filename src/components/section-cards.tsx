@@ -1,4 +1,4 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { columns, incomingColumns } from "@/components/columns";
 import { DataTable } from "@/components/data-tabletest";
@@ -138,19 +138,21 @@ export function SectionCards() {
     <div className="grid grid-cols-3 gap-4 px-4 lg:px-6">
       <Card className="col-span-2 shadow-none">
         <CardHeader>
-          <CardDescription>Ongoing Orders</CardDescription>
           <CardTitle>Your Current Orders</CardTitle>
-          <DataTable columns={columns} data={orders} />
+          <CardDescription>Ongoing Orders</CardDescription>
         </CardHeader>
+        <CardContent>
+          <DataTable columns={columns} data={orders} />
+        </CardContent>
       </Card>
       <Card className="shadow-none ">
         <CardHeader>
-          <CardDescription>Incoming/Outgoing Deliveries</CardDescription>
           <CardTitle>Orders being delivered</CardTitle>
+          <CardDescription>Incoming/Outgoing Deliveries</CardDescription>
         </CardHeader>
-        <div className="px-4">
+        <CardContent>
           <DataTable columns={incomingColumns} data={incoming} />
-        </div>
+        </CardContent>
       </Card>
     </div>
   );

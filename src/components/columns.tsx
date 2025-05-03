@@ -61,10 +61,7 @@ export const columns: ColumnDef<Order>[] = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="h-8 px-2 ring-2 bg-gray-100 hover:bg-gray-300 cursor-pointer"
-            >
+            <Button variant="outline">
               <span>View Actions</span>
             </Button>
           </DropdownMenuTrigger>
