@@ -133,7 +133,7 @@ export default function TrackingPage() {
           </div>
 
           <TabsContent value="all">
-            <Card className="shadow-none">
+            <Card className="shadow-none py-0">
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
