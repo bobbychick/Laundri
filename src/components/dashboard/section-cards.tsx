@@ -138,8 +138,8 @@ export function SectionCards() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <Card className="col-span-1 lg:col-span-2 shadow-none">
         <CardHeader>
-          <CardTitle>Your Current Orders</CardTitle>
-          <CardDescription>Ongoing Orders</CardDescription>
+          <CardTitle>Ongoing Orders</CardTitle>
+          <CardDescription>Your Current Orders</CardDescription>
         </CardHeader>
         <CardContent>
           <DataTable columns={columns} data={orders} />

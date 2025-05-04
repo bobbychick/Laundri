@@ -6,11 +6,9 @@ export default function Home() {
   return (
     <>
       <SiteHeader />
-      <div className="flex flex-1 flex-col gap-2 bg-accent p-4">
-        <div className="flex flex-col gap-4 ">
-          <SectionCards />
-          <ServiceDistribution />
-        </div>
+      <div className="flex flex-1 flex-col bg-accent p-4 gap-4">
+        <SectionCards />
+        <ServiceDistribution />
       </div>
     </>
   );
