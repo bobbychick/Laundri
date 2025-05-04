@@ -1,5 +1,5 @@
-import * as React from "react"
-import { Search } from "lucide-react"
+import { Search } from "lucide-react";
+import * as React from "react";
 
 // Sample customer data
 const customers = [
@@ -10,9 +10,9 @@ const customers = [
     phone: "+1 (555) 123-4567",
     address: "123 Main St, New York, NY 10001",
     totalOrders: 15,
-    totalSpent: 1250.00,
+    totalSpent: 1250.0,
     lastOrder: "2024-03-15",
-    status: "active"
+    status: "active",
   },
   {
     id: "CUST002",
@@ -21,9 +21,9 @@ const customers = [
     phone: "+1 (555) 234-5678",
     address: "456 Park Ave, Boston, MA 02108",
     totalOrders: 8,
-    totalSpent: 850.00,
+    totalSpent: 850.0,
     lastOrder: "2024-03-10",
-    status: "active"
+    status: "active",
   },
   {
     id: "CUST003",
@@ -32,9 +32,9 @@ const customers = [
     phone: "+1 (555) 345-6789",
     address: "789 Oak St, Chicago, IL 60601",
     totalOrders: 3,
-    totalSpent: 350.00,
+    totalSpent: 350.0,
     lastOrder: "2024-02-28",
-    status: "inactive"
+    status: "inactive",
   },
   {
     id: "CUST004",
@@ -43,9 +43,9 @@ const customers = [
     phone: "+1 (555) 456-7890",
     address: "321 Pine Rd, Los Angeles, CA 90001",
     totalOrders: 12,
-    totalSpent: 1100.00,
+    totalSpent: 1100.0,
     lastOrder: "2024-03-12",
-    status: "active"
+    status: "active",
   },
   {
     id: "CUST005",
@@ -54,30 +54,30 @@ const customers = [
     phone: "+1 (555) 567-8901",
     address: "654 Maple Dr, Miami, FL 33101",
     totalOrders: 5,
-    totalSpent: 450.00,
+    totalSpent: 450.0,
     lastOrder: "2024-03-01",
-    status: "active"
-  }
-]
+    status: "active",
+  },
+];
 
 export function CustomersPage() {
-  const [searchQuery, setSearchQuery] = React.useState("")
-  const [statusFilter, setStatusFilter] = React.useState("all")
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [statusFilter, setStatusFilter] = React.useState("all");
 
   const handleNewCustomer = () => {
-    console.log("Create new customer")
-  }
+    console.log("Create new customer");
+  };
 
-  const filteredCustomers = customers.filter(customer => {
-    const matchesSearch = 
+  const filteredCustomers = customers.filter((customer) => {
+    const matchesSearch =
       customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.id.toLowerCase().includes(searchQuery.toLowerCase())
-    
-    const matchesStatus = statusFilter === "all" || customer.status === statusFilter
+      customer.id.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesSearch && matchesStatus
-  })
+    const matchesStatus = statusFilter === "all" || customer.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <main className="flex-1 space-y-4 p-8 pt-6">
@@ -116,14 +116,30 @@ export function CustomersPage() {
           <table className="w-full caption-bottom text-sm">
             <thead className="[&_tr]:border-b">
               <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Customer ID</th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Contact</th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Total Orders</th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Total Spent</th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Last Order</th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
-                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Actions</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                  Customer ID
+                </th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                  Name
+                </th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                  Contact
+                </th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                  Total Orders
+                </th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                  Total Spent
+                </th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                  Last Order
+                </th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                  Status
+                </th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="[&_tr:last-child]:border-0">
@@ -164,5 +180,5 @@ export function CustomersPage() {
         </div>
       </div>
     </main>
-  )
+  );
 }
