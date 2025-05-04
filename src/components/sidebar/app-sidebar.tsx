@@ -6,7 +6,6 @@ import {
   IconInnerShadowTop,
   IconListDetails,
   IconReport,
-  IconSettings,
   IconUsersGroup,
 } from "@tabler/icons-react";
 import * as React from "react";
@@ -22,7 +21,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { NavSecondary } from "./nav-secondary";
 
 const data = {
   user: {
@@ -50,13 +48,7 @@ const data = {
       id: "tracking",
     },
   ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-  ],
+
   account: [
     {
       name: "Customers",
@@ -92,7 +84,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavAccount items={data.account} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
