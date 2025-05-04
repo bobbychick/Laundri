@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -148,6 +148,7 @@ export function ServiceDistribution() {
                 });
               }}
             />
+            <YAxis tickLine={false} axisLine={false} tickMargin={8} tickCount={3} />
             <ChartTooltip
               cursor={false}
               content={

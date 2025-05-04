@@ -48,7 +48,7 @@ export const columns: ColumnDef<Order>[] = [
               ? "bg-theme-one text-primary-foreground"
               : row.original.service === "Dry Clean"
               ? "bg-theme-two"
-              : "bg-theme-five"
+              : "bg-theme-five/80"
           )}
         >
           {row.original.service}
@@ -75,18 +75,7 @@ export const columns: ColumnDef<Order>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-2 min-w-32">
-          <Badge
-            className={cn(
-              "rounded-full text-primary",
-              row.original.status === "Delivered"
-                ? "bg-green-500 text-primary-foreground"
-                : row.original.status === "In Progress"
-                ? "bg-yellow-500 text-primary-foreground"
-                : "bg-primary text-primary-foreground"
-            )}
-          >
-            {row.original.status}
-          </Badge>
+          <Badge>{row.original.status}</Badge>
         </div>
       );
     },

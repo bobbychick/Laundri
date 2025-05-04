@@ -3,11 +3,9 @@ import {
   IconChartBar,
   IconDashboard,
   IconFileWord,
-  IconHelp,
   IconInnerShadowTop,
   IconListDetails,
   IconReport,
-  IconSearch,
   IconSettings,
   IconUsersGroup,
 } from "@tabler/icons-react";
@@ -15,7 +13,6 @@ import * as React from "react";
 
 import { NavAccount } from "@/components/sidebar/nav-account";
 import { NavMain } from "@/components/sidebar/nav-main";
-import { NavSecondary } from "@/components/sidebar/nav-secondary";
 import { NavUser } from "@/components/sidebar/nav-user";
 import {
   Sidebar,
@@ -25,6 +22,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { NavSecondary } from "./nav-secondary";
 
 const data = {
   user: {
@@ -57,16 +55,6 @@ const data = {
       title: "Settings",
       url: "#",
       icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
     },
   ],
   account: [
