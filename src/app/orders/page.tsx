@@ -1,22 +1,23 @@
 "use client";
 
 import { SiteHeader } from "@/components/layout/site-header";
+import { Order, OrderStatus } from "@/components/orders/columns";
+import { OrdersTable } from "@/components/orders/orders-table";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
-  AlertCircle,
-  Calendar,
-  CheckCircle,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Filter,
-  Package,
-  Search,
-  Truck,
-  User,
-} from "lucide-react";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 
-// Sample data for demonstration - expanded from your original dashboard data
+// Sample order history data
 const orderHistory = [
   {
     id: "ORD-3421",
@@ -101,534 +102,158 @@ const orderHistory = [
 ];
 
 export default function OrdersPage() {
-  const [activeView, setActiveView] = useState("all");
+  const [activeView, setActiveView] = useState<"all" | "active" | "completed">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showOrderDetail, setShowOrderDetail] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [dateFilter, setDateFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [dateFilter, setDateFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  // Filter orders based on search, date, and status
-  const filteredOrders = orderHistory.filter((order) => {
-    const matchesSearch =
-      order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.id.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesStatus = statusFilter === "all" || order.status === statusFilter;
-
-    let matchesDate = true;
-    if (dateFilter === "today") {
-      matchesDate = order.date === "2025-04-22"; // Assuming today is April 22, 2025
-    } else if (dateFilter === "week") {
-      // Simple example - in real app you'd do proper date comparison
-      matchesDate = ["2025-04-22", "2025-04-21", "2025-04-20", "2025-04-19"].includes(order.date);
-    }
-
-    return matchesSearch && matchesStatus && matchesDate;
-  });
-
-  const handleViewOrder = (order) => {
+  const handleViewOrder = (order: Order) => {
     setSelectedOrder(order);
     setShowOrderDetail(true);
   };
 
-  const handleStatusChange = (orderId, newStatus) => {
-    // In a real application, you would update the status in your database
-    console.log(`Changing order ${orderId} status to ${newStatus}`);
-    // For demo purposes, let's update our local state
-    const updatedOrders = orderHistory.map((order) =>
-      order.id === orderId ? { ...order, status: newStatus } : order
-    );
-    // In real app, you'd dispatch an action or call an API here
+  const handleStatusChange = (orderId: string, newStatus: OrderStatus) => {
+    // In a real application, you would update the order status in your database
+    console.log(`Order ${orderId} status changed to ${newStatus}`);
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Delivered":
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case "In Progress":
-        return <Clock className="h-5 w-5 text-blue-500" />;
-      case "Scheduled":
-        return <Calendar className="h-5 w-5 text-yellow-500" />;
-      case "Cancelled":
-        return <AlertCircle className="h-5 w-5 text-red-500" />;
-      default:
-        return <Package className="h-5 w-5 text-gray-500" />;
-    }
-  };
+  const filteredOrders = orderHistory.filter((order) => {
+    const matchesSearch =
+      order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDate = dateFilter === "all" || order.date === dateFilter;
+    const matchesStatus = statusFilter === "all" || order.status === statusFilter;
+    const matchesView =
+      activeView === "all" ||
+      (activeView === "active" && order.status !== "Delivered" && order.status !== "Cancelled") ||
+      (activeView === "completed" &&
+        (order.status === "Delivered" || order.status === "Cancelled"));
 
-  // Order flow steps based on the provided flow document
-  const orderFlowSteps = [
-    {
-      title: "Order Creation",
-      description: "Customer places order through app/website",
-      icon: <User />,
-    },
-    {
-      title: "Incoming Delivery",
-      description: "Courier picks up laundry from customer",
-      icon: <Truck />,
-    },
-    {
-      title: "Order Processing",
-      description: "Laundry is washed, dried, folded as ordered",
-      icon: <Package />,
-    },
-    {
-      title: "Outgoing Delivery",
-      description: "Clean items delivered back to customer",
-      icon: <Truck />,
-    },
-    {
-      title: "Order Complete",
-      description: "Payment processed and order completed",
-      icon: <CheckCircle />,
-    },
-  ];
-
-  // Function to determine current step for order flow visualization
-  const getCurrentStep = (status) => {
-    switch (status) {
-      case "Scheduled":
-        return 0;
-      case "In Transit":
-        return 1;
-      case "In Progress":
-        return 2;
-      case "Out for Delivery":
-        return 3;
-      case "Delivered":
-        return 4;
-      default:
-        return 0;
-    }
-  };
+    return matchesSearch && matchesDate && matchesStatus && matchesView;
+  });
 
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <SiteHeader text="Orders" />
-      <div className="min-h-screen bg-gray-50 p-6">
-        {!showOrderDetail ? (
-          <>
-            {/* Order filtering and search */}
-            <div className="bg-white rounded-lg shadow p-4 mb-6">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium text-gray-700">View:</span>
-                  <div className="flex bg-gray-100 rounded-lg p-1">
-                    <button
-                      className={`px-3 py-1 text-sm rounded-md transition ${
-                        activeView === "all" ? "bg-white shadow" : "hover:bg-gray-200"
-                      }`}
-                      onClick={() => setActiveView("all")}
-                    >
-                      All Orders
-                    </button>
-                    <button
-                      className={`px-3 py-1 text-sm rounded-md transition ${
-                        activeView === "active" ? "bg-white shadow" : "hover:bg-gray-200"
-                      }`}
-                      onClick={() => setActiveView("active")}
-                    >
-                      Active
-                    </button>
-                    <button
-                      className={`px-3 py-1 text-sm rounded-md transition ${
-                        activeView === "completed" ? "bg-white shadow" : "hover:bg-gray-200"
-                      }`}
-                      onClick={() => setActiveView("completed")}
-                    >
-                      Completed
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="relative">
-                    <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Search orders..."
-                      className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-
-                  <select
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
-                    value={dateFilter}
-                    onChange={(e) => setDateFilter(e.target.value)}
-                  >
-                    <option value="all">All Dates</option>
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                  </select>
-
-                  <select
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                  >
-                    <option value="all">All Status</option>
-                    <option value="Scheduled">Scheduled</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled</option>
-                  </select>
-
-                  <button className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white hover:bg-gray-50">
-                    <Filter className="h-4 w-4 mr-1" />
-                    More Filters
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Orders table */}
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Order ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Customer
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date & Time
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Service
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Amount
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredOrders.length > 0 ? (
-                      filteredOrders.map((order) => (
-                        <tr key={order.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {order.id}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div>{order.customer}</div>
-                            <div className="text-xs text-gray-400">{order.address}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              {getStatusIcon(order.status)}
-                              <span
-                                className={`ml-2 px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                  order.status === "Delivered"
-                                    ? "bg-green-100 text-green-800"
-                                    : order.status === "In Progress"
-                                    ? "bg-blue-100 text-blue-800"
-                                    : order.status === "Cancelled"
-                                    ? "bg-red-100 text-red-800"
-                                    : "bg-yellow-100 text-yellow-800"
-                                }`}
-                              >
-                                {order.status}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div>{order.date}</div>
-                            <div className="text-xs text-gray-400">{order.time}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {order.service}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {order.amount}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button
-                              className="text-blue-600 hover:text-blue-900 mr-3"
-                              onClick={() => handleViewOrder(order)}
-                            >
-                              View
-                            </button>
-                            <select
-                              className="border border-gray-200 rounded px-2 py-1 text-xs"
-                              onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                              value={order.status}
-                            >
-                              <option value="Scheduled">Scheduled</option>
-                              <option value="In Progress">In Progress</option>
-                              <option value="Delivered">Delivered</option>
-                              <option value="Cancelled">Cancel</option>
-                            </select>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500">
-                          No orders found matching your filters.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Pagination */}
-              <div className="px-4 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-                <div className="text-sm text-gray-700">
-                  Showing <span className="font-medium">1</span> to{" "}
-                  <span className="font-medium">{filteredOrders.length}</span> of{" "}
-                  <span className="font-medium">{orderHistory.length}</span> orders
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    <ChevronLeft className="h-4 w-4" />
-                  </button>
-                  <button className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          /* Order Detail View */
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-6">
-              <button
-                onClick={() => setShowOrderDetail(false)}
-                className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Back to All Orders
-              </button>
-
-              <div className="flex flex-col md:flex-row justify-between mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">{selectedOrder.id}</h2>
-                  <p className="text-gray-600">
-                    Order placed on {selectedOrder.date} at {selectedOrder.time}
-                  </p>
-                </div>
-                <div className="mt-4 md:mt-0">
-                  <div
-                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                      selectedOrder.status === "Delivered"
-                        ? "bg-green-100 text-green-800"
-                        : selectedOrder.status === "In Progress"
-                        ? "bg-blue-100 text-blue-800"
-                        : selectedOrder.status === "Cancelled"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    }`}
-                  >
-                    {getStatusIcon(selectedOrder.status)}
-                    <span className="ml-2">{selectedOrder.status}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Order Flow Progress */}
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold mb-4">Order Progress</h3>
-                <div className="relative">
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200"></div>
-                  <div className="flex justify-between relative">
-                    {orderFlowSteps.map((step, index) => {
-                      const currentStep = getCurrentStep(selectedOrder.status);
-                      const isCompleted = index <= currentStep;
-                      const isCurrent = index === currentStep;
-
-                      return (
-                        <div key={index} className="flex flex-col items-center relative z-10">
-                          <div
-                            className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                              isCompleted ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-400"
-                            } ${isCurrent ? "ring-4 ring-blue-100" : ""}`}
-                          >
-                            {step.icon}
-                          </div>
-                          <div className="text-xs font-medium mt-2 text-center">{step.title}</div>
-                          <div className="text-xs text-gray-500 text-center max-w-xs">
-                            {step.description}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              {/* Customer & Order Details in 2 column layout */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold mb-3">Customer Information</h3>
-                  <div className="space-y-2">
-                    <div>
-                      <span className="text-sm text-gray-500">Name:</span>
-                      <p className="font-medium">{selectedOrder.customer}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500">Address:</span>
-                      <p className="font-medium">{selectedOrder.address}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500">Contact:</span>
-                      <p className="font-medium">(555) 123-4567</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500">Customer Since:</span>
-                      <p className="font-medium">March 2024</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold mb-3">Order Details</h3>
-                  <div className="space-y-2">
-                    <div>
-                      <span className="text-sm text-gray-500">Service:</span>
-                      <p className="font-medium">{selectedOrder.service}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500">Items:</span>
-                      <p className="font-medium">8 items (4.5 lbs)</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500">Special Instructions:</span>
-                      <p className="font-medium">Use fragrance-free detergent</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500">Amount:</span>
-                      <p className="font-medium">{selectedOrder.amount}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Order Timeline */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-3">Order Timeline</h3>
-                <div className="border-l-2 border-gray-200 pl-4 ml-4 space-y-6">
-                  <div className="relative">
-                    <div className="absolute -left-6 mt-1 h-4 w-4 rounded-full bg-blue-600"></div>
-                    <div className="text-sm font-medium">Order Created</div>
-                    <div className="text-xs text-gray-500">
-                      {selectedOrder.date} at {selectedOrder.time}
-                    </div>
-                    <div className="text-sm mt-1">Customer placed order through mobile app</div>
-                  </div>
-
-                  {selectedOrder.status !== "Scheduled" && (
-                    <div className="relative">
-                      <div className="absolute -left-6 mt-1 h-4 w-4 rounded-full bg-blue-600"></div>
-                      <div className="text-sm font-medium">Pickup Scheduled</div>
-                      <div className="text-xs text-gray-500">
-                        {selectedOrder.date} at{" "}
-                        {new Date(`2025-04-22T${selectedOrder.time}`).getHours() +
-                          1 +
-                          ":" +
-                          new Date(`2025-04-22T${selectedOrder.time}`).getMinutes()}
-                      </div>
-                      <div className="text-sm mt-1">Driver assigned for pickup</div>
-                    </div>
-                  )}
-
-                  {(selectedOrder.status === "In Progress" ||
-                    selectedOrder.status === "Delivered") && (
-                    <div className="relative">
-                      <div className="absolute -left-6 mt-1 h-4 w-4 rounded-full bg-blue-600"></div>
-                      <div className="text-sm font-medium">Processing Started</div>
-                      <div className="text-xs text-gray-500">
-                        {selectedOrder.date} at{" "}
-                        {new Date(`2025-04-22T${selectedOrder.time}`).getHours() +
-                          2 +
-                          ":" +
-                          new Date(`2025-04-22T${selectedOrder.time}`).getMinutes()}
-                      </div>
-                      <div className="text-sm mt-1">Items received and processing started</div>
-                    </div>
-                  )}
-
-                  {selectedOrder.status === "Delivered" && (
-                    <>
-                      <div className="relative">
-                        <div className="absolute -left-6 mt-1 h-4 w-4 rounded-full bg-blue-600"></div>
-                        <div className="text-sm font-medium">Ready for Delivery</div>
-                        <div className="text-xs text-gray-500">
-                          {selectedOrder.date} at{" "}
-                          {new Date(`2025-04-22T${selectedOrder.time}`).getHours() +
-                            4 +
-                            ":" +
-                            new Date(`2025-04-22T${selectedOrder.time}`).getMinutes()}
-                        </div>
-                        <div className="text-sm mt-1">
-                          Processing complete, items ready for delivery
-                        </div>
-                      </div>
-
-                      <div className="relative">
-                        <div className="absolute -left-6 mt-1 h-4 w-4 rounded-full bg-green-600"></div>
-                        <div className="text-sm font-medium">Delivered</div>
-                        <div className="text-xs text-gray-500">
-                          {selectedOrder.date} at{" "}
-                          {new Date(`2025-04-22T${selectedOrder.time}`).getHours() +
-                            5 +
-                            ":" +
-                            new Date(`2025-04-22T${selectedOrder.time}`).getMinutes()}
-                        </div>
-                        <div className="text-sm mt-1">Items delivered to customer</div>
-                      </div>
-                    </>
-                  )}
-
-                  {selectedOrder.status === "Cancelled" && (
-                    <div className="relative">
-                      <div className="absolute -left-6 mt-1 h-4 w-4 rounded-full bg-red-600"></div>
-                      <div className="text-sm font-medium">Order Cancelled</div>
-                      <div className="text-xs text-gray-500">
-                        {selectedOrder.date} at{" "}
-                        {new Date(`2025-04-22T${selectedOrder.time}`).getHours() +
-                          1 +
-                          ":" +
-                          new Date(`2025-04-22T${selectedOrder.time}`).getMinutes()}
-                      </div>
-                      <div className="text-sm mt-1">Customer cancelled the order</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-3 justify-end mt-8">
-                <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                  Print Receipt
-                </button>
-                <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                  Contact Customer
-                </button>
-                {selectedOrder.status !== "Delivered" && selectedOrder.status !== "Cancelled" && (
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    Update Status
-                  </button>
-                )}
-              </div>
+      <main className="flex-1 space-y-4 p-4 ">
+        <Tabs
+          defaultValue="all"
+          className="space-y-4"
+          value={activeView}
+          onValueChange={(value) => setActiveView(value as "all" | "active" | "completed")}
+        >
+          <div className="flex items-center">
+            <TabsList>
+              <TabsTrigger value="all">All Orders</TabsTrigger>
+              <TabsTrigger value="active">Active Orders</TabsTrigger>
+              <TabsTrigger value="completed">Completed Orders</TabsTrigger>
+            </TabsList>
+            <div className="ml-auto flex items-center space-x-2">
+              <Input
+                placeholder="Search orders..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-8 w-[150px] lg:w-[250px]"
+              />
+              <Select value={dateFilter} onValueChange={setDateFilter}>
+                <SelectTrigger className="h-8 w-[130px]">
+                  <SelectValue placeholder="Date" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Dates</SelectItem>
+                  <SelectItem value="2024-03-15">Mar 15, 2024</SelectItem>
+                  <SelectItem value="2024-03-16">Mar 16, 2024</SelectItem>
+                  <SelectItem value="2024-03-17">Mar 17, 2024</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="h-8 w-[130px]">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="Scheduled">Scheduled</SelectItem>
+                  <SelectItem value="In Progress">In Progress</SelectItem>
+                  <SelectItem value="Delivered">Delivered</SelectItem>
+                  <SelectItem value="Cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
+          <TabsContent value="all" className="space-y-4">
+            <OrdersTable
+              orders={filteredOrders as Order[]}
+              onViewOrder={handleViewOrder}
+              onStatusChange={handleStatusChange}
+            />
+          </TabsContent>
+          <TabsContent value="active" className="space-y-4">
+            <OrdersTable
+              orders={filteredOrders as Order[]}
+              onViewOrder={handleViewOrder}
+              onStatusChange={handleStatusChange}
+            />
+          </TabsContent>
+          <TabsContent value="completed" className="space-y-4">
+            <OrdersTable
+              orders={filteredOrders as Order[]}
+              onViewOrder={handleViewOrder}
+              onStatusChange={handleStatusChange}
+            />
+          </TabsContent>
+        </Tabs>
+        {showOrderDetail && selectedOrder && (
+          <Card className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <CardContent className="w-full max-w-2xl bg-white p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Order Details</h3>
+                <Button variant="ghost" onClick={() => setShowOrderDetail(false)}>
+                  Close
+                </Button>
+              </div>
+              <Separator className="my-4" />
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-500">Order ID</p>
+                    <p className="font-medium">{selectedOrder.id}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Customer</p>
+                    <p className="font-medium">{selectedOrder.customer}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Address</p>
+                    <p className="font-medium">{selectedOrder.address}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Status</p>
+                    <p className="font-medium">{selectedOrder.status}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Date</p>
+                    <p className="font-medium">{selectedOrder.date}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Time</p>
+                    <p className="font-medium">{selectedOrder.time}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Service</p>
+                    <p className="font-medium">{selectedOrder.service}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Amount</p>
+                    <p className="font-medium">{selectedOrder.amount}</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
-      </div>
-    </>
+      </main>
+    </div>
   );
 }
