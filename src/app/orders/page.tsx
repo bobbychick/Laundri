@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { Order, OrderStatus } from "@/components/orders/columns";
 import { OrdersTable } from "@/components/orders/orders-table";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -109,6 +109,15 @@ export default function OrdersPage() {
   const [dateFilter, setDateFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
+  // Calculate order statistics
+  const totalOrders = orderHistory.length;
+  const activeOrders = orderHistory.filter(
+    (order) => order.status === "In Progress" || order.status === "Scheduled"
+  ).length;
+  const totalRevenue = orderHistory
+    .reduce((sum, order) => sum + parseFloat(order.amount.replace("$", "") || "0"), 0)
+    .toFixed(2);
+
   const handleViewOrder = (order: Order) => {
     setSelectedOrder(order);
     setShowOrderDetail(true);
@@ -137,7 +146,37 @@ export default function OrdersPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader text="Orders" />
-      <main className="flex-1 space-y-4 p-4 ">
+      <main className="flex-1 space-y-4 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="shadow-none">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-normal text-gray-500">Active Orders</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-light">{activeOrders}</p>
+              <p className="text-sm text-gray-500 mt-2">Orders in progress</p>
+            </CardContent>
+          </Card>
+          <Card className="shadow-none">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-normal text-gray-500">Total Orders</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-light">{totalOrders}</p>
+              <p className="text-sm text-gray-500 mt-2">Last 30 days</p>
+            </CardContent>
+          </Card>
+          <Card className="shadow-none">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-normal text-gray-500">Total Revenue</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-light">${totalRevenue}</p>
+              <p className="text-sm text-gray-500 mt-2">Last 30 days</p>
+            </CardContent>
+          </Card>
+        </div>
+
         <Tabs
           defaultValue="all"
           className="space-y-4"
