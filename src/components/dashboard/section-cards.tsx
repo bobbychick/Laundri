@@ -135,8 +135,8 @@ const incoming = [
 
 export function SectionCards() {
   return (
-    <div className="grid grid-cols-3 gap-4 px-4 lg:px-6">
-      <Card className="col-span-2 shadow-none">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <Card className="col-span-1 lg:col-span-2 shadow-none">
         <CardHeader>
           <CardTitle>Your Current Orders</CardTitle>
           <CardDescription>Ongoing Orders</CardDescription>
@@ -145,7 +145,7 @@ export function SectionCards() {
           <DataTable columns={columns} data={orders} />
         </CardContent>
       </Card>
-      <Card className="shadow-none ">
+      <Card className="col-span-1 shadow-none ">
         <CardHeader>
           <CardTitle>Orders being delivered</CardTitle>
           <CardDescription>Incoming/Outgoing Deliveries</CardDescription>

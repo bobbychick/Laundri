@@ -93,7 +93,7 @@ export function ServiceDistribution() {
   }, [isMobile]);
 
   return (
-    <Card>
+    <Card className="shadow-none">
       <CardHeader className="flex flex-col md:flex-row items-center gap-2 space-y-0 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>Service Distribution</CardTitle>
