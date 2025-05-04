@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
+import { Badge } from "../ui/badge";
 
 export type Order = {
   id: string;
@@ -34,6 +35,13 @@ export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "service",
     header: "Service",
+    cell: ({ row }) => {
+      return (
+        <Badge variant="outline" className="bg-theme-five">
+          {row.original.service}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "status",
@@ -48,7 +56,6 @@ export const columns: ColumnDef<Order>[] = [
         </Button>
       );
     },
-    // header: "Status",
   },
   {
     id: "actions",

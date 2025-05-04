@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { columns, incomingColumns } from "@/components/columns";
+import { columns, incomingColumns } from "@/components/dashboard/columns";
 import { DataTable } from "@/components/data-tabletest";
 
 const orders = [
